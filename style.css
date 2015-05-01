@@ -1,0 +1,14 @@
+.product-list {
+    background-color: aquamarine;
+    float: left;
+    width: 70%;
+}
+
+.shopping-cart {
+    background-color: deepskyblue;
+    float: left;
+    width: 30%;
+}
+
+.product-table {
+}
