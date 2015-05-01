@@ -20,31 +20,41 @@
         require_once('MDB2.php');
         $dsn = "mysql://scott2:tiger@localhost/sklep";
         $db = MDB2::connect($dsn);
+        $current_url = base64_encode("http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
         if (MDB2::isError($db))
             die($db->getMessage());
-
-        printf("<h1>PRODUKTY</h1>");
-        printf("<table class=\"table table-bordered product-table\"><thead>");
-        printf("<tr><th>ID</th><th>NAZWA</th><th>POJEMNOSC</th><th>CENA</th><th>SZTUK</th><th>KUP</th></tr></thead>");;
         $sql = "SELECT id,nazwa,pojemnosc,cena,sztuk FROM produkty";
         $result = $db->query($sql);
+        ?>
+
+        <h1>PRODUKTY</h1>
+        <table class="table table-bordered product-table"><thead>
+        <tr><th>ID</th><th>NAZWA</th><th>POJEMNOSC</th><th>CENA</th><th>SZTUK</th><th>KUP</th></tr></thead>
+        
+        <?php
         while ($row = $result->fetchrow(MDB2_FETCHMODE_ORDERED))
         {
-            echo "<form method=\"post\" action=\"index.php\">";
-            printf("<tr><td>%d</td><td>%s</td><td>%s</td><td>%7.2f</td><td>%d</td>",$row[0],$row[1],$row[2],$row[3],$row[4]);
-            echo "<td><select>";
+            ?>
+            <form method="POST" action="cart.php"><tr>
+            <?php
+            printf("<td>%d</td><td>%s</td><td>%s</td><td>%7.2f</td><td>%d</td>",$row[0],$row[1],$row[2],$row[3],$row[4]);
+            ?>
+            <td><select>
+            <?php
             for ($i=1; $i<=$row[4]; $i++) {
                 echo '<option value="'.$i.'">'.$i.'</option>';
             }
-            echo "</select></td>";
-            echo "<td><button class=\"add_to_cart\">Add To Cart</button>";
-            echo '<input type="hidden" name="product_code" value="'.$row[1].'" />';
-            //echo "<span class=\"glyphicon glyphicon-shopping-cart\"></span>";
-            echo "</td></tr>";
+            ?>
+            </select></td>
+            <td><button type="submit" class="add_to_cart">Add To Cart</button>
+            <input type="hidden" name="product_code" value="<?php echo $row[1];?>" />
+            <input type="hidden" name="return_url" value="<?php echo $current_url;?>" />
+            </td></tr>
 
-            echo "</form>";
-        }
-        printf("</table>");
+            </form>
+        <?php } ?>
+        </table>
+        <?php
         $result->free();
         $sql = "SELECT COUNT(*) FROM produkty";
         $result = $db->queryOne($sql);
@@ -69,30 +79,11 @@
             }
         }
         ?>
-                <form method="POST" action="index.php">
-                    <input type="hidden" name="clear" value="1"/>
-                    <input type="submit" value="Clear basket">
-                </form>
+<!--                <form method="POST" action="index.php">-->
+<!--                    <input type="hidden" name="clear" value="1"/>-->
+<!--                    <input type="submit" value="Clear basket">-->
+<!--                </form>-->
     </div>
-
-        <?php
-        if(isset($_POST['product_code'])) {
-            $obj = $_POST['product_code'];
-            $products = $_SESSION['temp'];
-            if (is_array($products)) {
-                array_push($products, $obj);
-            } else {
-                $products = array($obj);
-            }
-            $_SESSION['temp'] = $products;
-            header("Location: " . $_SERVER['REQUEST_URI']);
-        }
-        if(isset($_POST["clear"]) && $_POST['clear']==1)
-                {
-                    session_destroy();
-                    header("Location: " . $_SERVER['REQUEST_URI']);
-                }
-        ?>
 
     </div>
 </body>
