@@ -36,15 +36,15 @@
             <?php
             printf("<td>%d</td><td>%s</td><td>%s</td><td>%7.2f</td><td>%d</td>",$row[0],$row[1],$row[2],$row[3],$row[4]);
             ?>
-            <td><select>
+            <td><select name="quantity">
             <?php
             for ($i=1; $i<=$row[4]; $i++) {
                 echo '<option value="'.$i.'">'.$i.'</option>';
             }
             ?>
             </select></td>
-            <td><button type="submit" class="add_to_cart">Add To Cart</button>
-            <input type="hidden" name="product_code" value="<?php echo $row[1];?>" />
+            <td><button type="submit" class="add_to_cart">Do koszyka</button>
+            <input type="hidden" name="product_code" value="<?php echo $row[0];?>" />
             <input type="hidden" name="return_url" value="<?php echo $current_url;?>" />
             </td></tr>
 
@@ -61,16 +61,28 @@
     </div>
 
     <div class="shopping-cart container">
-        <h3>Koszyk</h3>
         <?php
-        if (isset($_SESSION[@"passed_data"])) {
-            echo $_SESSION[@"passed_data"];
+        if (isset($_SESSION["passed_data"])) {
+            $passed_data = $_SESSION["passed_data"];
+//            var_dump($_SESSION["passed_data"]);
+            printf("<h3>Koszyk (%d produktów)</h3>", count($passed_data));
+            ?>
+            <table class="table">
+            <?php foreach ($passed_data as $product) {
+                echo "<tr>";
+                printf('<td>%dx</td><td>%s</td><td>%s</td><td>%7.2f</td>', $product["quantity"], $product["name"], $product["capacity"], $product["price"]);
+                echo "</tr>";
+            } ?>
+            </table>
+            <?php
+        } else {
+            echo "<h3>Koszyk (pusty)</h3>";
         }
         ?>
         <form method="POST" action="cart.php">
             <input type="hidden" name="clear" value="1"/>
             <input type="hidden" name="return_url" value="<?php echo $current_url;?>" />
-            <input type="submit" value="Clear basket">
+            <input type="submit" value="Opróźnij koszyk">
         </form>
     </div>
 
