@@ -16,15 +16,12 @@
     <div class="container">
     <div class="product-list container">
         <?php
+        require_once('database_config.php');
 
-        require_once('MDB2.php');
-        $dsn = "mysql://scott2:tiger@localhost/sklep";
-        $db = MDB2::connect($dsn);
         $current_url = base64_encode("http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
-        if (MDB2::isError($db))
-            die($db->getMessage());
         $sql = "SELECT id,nazwa,pojemnosc,cena,sztuk FROM produkty";
         $result = $db->query($sql);
+
         ?>
 
         <h1>PRODUKTY</h1>
@@ -58,7 +55,6 @@
         $result->free();
         $sql = "SELECT COUNT(*) FROM produkty";
         $result = $db->queryOne($sql);
-        echo "<i>Query returned $result rows</i>";
 
         $db->disconnect();
         ?>
@@ -67,22 +63,15 @@
     <div class="shopping-cart container">
         <h3>Koszyk</h3>
         <?php
-        if (isset($_SESSION['temp'])) {
-            if (is_array($_SESSION['temp'])) {
-                $i = 0;
-                foreach ($_SESSION['temp'] as $cart_item) {
-                    echo "<br>".$cart_item;
-                    $i++;
-                }
-            } else {
-                echo "zmienna: " . $_SESSION['temp'];
-            }
+        if (isset($_SESSION[@"passed_data"])) {
+            echo $_SESSION[@"passed_data"];
         }
         ?>
-<!--                <form method="POST" action="index.php">-->
-<!--                    <input type="hidden" name="clear" value="1"/>-->
-<!--                    <input type="submit" value="Clear basket">-->
-<!--                </form>-->
+        <form method="POST" action="cart.php">
+            <input type="hidden" name="clear" value="1"/>
+            <input type="hidden" name="return_url" value="<?php echo $current_url;?>" />
+            <input type="submit" value="Clear basket">
+        </form>
     </div>
 
     </div>
