@@ -40,3 +40,17 @@ button {
 .table tbody tr .noborder {
     border-top: none;
 }
+
+.buy {
+    text-align: right;
+}
+
+.red {
+    background-color: lightcoral;
+}
+
+.image {
+    width: 100%;
+    max-width: 100px;
+    height: auto;
+}

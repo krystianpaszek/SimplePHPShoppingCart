@@ -6,27 +6,39 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="style.css">
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 </head>
 <body>
+
 
     <?php
     session_start();
     ?>
     <div class="container">
-    <div class="product-list container">
-        <?php
+    <?php
+
+    if (isset($_SESSION["complete"]) and $_SESSION["complete"]==1) {
+        $_SESSION["complete"] = 0;?>
+
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Purchase complete!</strong>
+        </div>
+
+    <?php }
+
         require_once('database_config.php');
 
         $current_url = base64_encode("http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
-        $sql = "SELECT id,nazwa,pojemnosc,cena,sztuk FROM produkty";
+        $sql = "SELECT id,nazwa,pojemnosc,cena,sztuk,foto FROM produkty";
         $result = $db->query($sql);
 
         ?>
-
+        <div class="product-list container">
         <h1>PRODUKTY</h1>
         <table class="table table-bordered product-table"><thead>
-        <tr><th>ID</th><th>NAZWA</th><th>POJEMNOSC</th><th>CENA</th><th>SZTUK</th><th>KUP</th></tr></thead>
+        <tr><th>ZDJĘCIE</th><th>NAZWA</th><th>POJEMNOSC</th><th>CENA</th><th>SZTUK</th><th>KUP</th></tr></thead>
         
         <?php
         while ($row = $result->fetchrow(MDB2_FETCHMODE_ORDERED))
@@ -34,6 +46,7 @@
             ?>
             <form method="POST" action="cart.php"><tr>
             <?php
+            printf("<td><img src='%s' class='image'</td>", $row[5]);
             printf("<td>%d</td><td>%s</td><td>%s</td><td>%7.2f</td><td>%d</td>",$row[0],$row[1],$row[2],$row[3],$row[4]);
             ?>
             <td><select name="quantity">
