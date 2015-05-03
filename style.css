@@ -12,3 +12,31 @@
 
 .product-table {
 }
+
+.sum {
+    font-weight: bold;
+}
+
+.capacity {
+    white-space: nowrap;
+}
+
+button {
+    -webkit-appearance: button;
+}
+
+.clear {
+    width:50%;
+}
+
+.checkout {
+    text-align: center;
+}
+
+.table-checkout {
+    margin-bottom: 0px;
+}
+
+.table tbody tr .noborder {
+    border-top: none;
+}

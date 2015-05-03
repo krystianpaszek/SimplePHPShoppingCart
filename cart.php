@@ -13,25 +13,45 @@
             $quantity = -1;
         }
 
+        $found = false;
         if (isset($_SESSION['passed_data'])) {
             $product_array = $_SESSION['passed_data'];
-        }
 
-        foreach ($product_array as $cart_itm) //loop through session array
-        {
-             if($cart_itm["code"] == $product_code){ //the item exist in array
-                 $product[] = array('name'=>$cart_itm["name"], 'code'=>$cart_itm["code"], 'quantity'=>$quantity, 'price'=>$cart_itm["price"], 'capacity'=>$cart_itm['capacity']);
-                 $found = true;
-            }else{
-                 //item doesn't exist in the list, just retrive old info and prepare array for session var
-                $product[] = array('name'=>$cart_itm["name"], 'code'=>$cart_itm["code"], 'quantity'=>$cart_itm["quantity"], 'price'=>$cart_itm["price"], 'capacity'=>$cart_itm['capacity']);
+            foreach ($product_array as $cart_itm) //loop through session array
+            {
+                if ($cart_itm["code"] == $product_code) { //the item exist in array
+                    $product[] = array('name' => $cart_itm["name"], 'code' => $cart_itm["code"], 'quantity' => $quantity, 'price' => $cart_itm["price"], 'capacity' => $cart_itm['capacity']);
+                    $found = true;
+                } else {
+                    //item doesn't exist in the list, just retrive old info and prepare array for session var
+                    $product[] = array('name' => $cart_itm["name"], 'code' => $cart_itm["code"], 'quantity' => $cart_itm["quantity"], 'price' => $cart_itm["price"], 'capacity' => $cart_itm['capacity']);
+                }
             }
         }
+
 
         if($found == false) //we didn't find item in array
         {
             //add new user item in array
             $product[] = array('code' => $product_code, 'name' => $result[0], 'capacity' => $result[1], 'price' => $result[2], 'quantity' => $quantity);
+        }
+
+        $_SESSION['passed_data'] = $product;
+//        header("Location: " . $return_url);
+    }
+
+    if (isset($_POST["remove_product_code"])) {
+        if (isset($_SESSION['passed_data'])) {
+            $product_array = $_SESSION['passed_data'];
+        }
+
+        $product_code = $_POST['remove_product_code'];
+        echo $product_code;
+        foreach ($product_array as $cart_itm) //loop through session array
+        {
+            if ($cart_itm["code"] != $product_code) { //the item exist in array
+                $product[] = array('name' => $cart_itm["name"], 'code' => $cart_itm["code"], 'quantity' => $cart_itm["quantity"], 'price' => $cart_itm["price"], 'capacity' => $cart_itm['capacity']);
+            }
         }
 
         $_SESSION['passed_data'] = $product;

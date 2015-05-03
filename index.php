@@ -64,26 +64,41 @@
         <?php
         if (isset($_SESSION["passed_data"])) {
             $passed_data = $_SESSION["passed_data"];
+            $sum = 0;
 //            var_dump($_SESSION["passed_data"]);
             printf("<h3>Koszyk (%d produktów)</h3>", count($passed_data));
             ?>
             <table class="table">
             <?php foreach ($passed_data as $product) {
                 echo "<tr>";
-                printf('<td>%dx</td><td>%s</td><td>%s</td><td>%7.2f</td>', $product["quantity"], $product["name"], $product["capacity"], $product["price"]);
+                printf('<td>%dx</td><td>%s</td><td class="capacity">%s</td><td>%7.2f</td>', $product["quantity"], $product["name"], $product["capacity"], $product["price"]);
+                $sum += $product["quantity"]*$product["price"];
+                ?>
+                <td><form method="POST" action="cart.php">
+                <button type="submit" class="remove_from_cart">X</button>
+                <input type="hidden" name="remove_product_code" value="<?php echo $product["code"];?>" />
+                <input type="hidden" name="return_url" value="<?php echo $current_url;?>" />
+                </form></td>
+                <?php
                 echo "</tr>";
             } ?>
+            <tr><td></td><td></td><td></td><td class="sum"><?php printf("%7.2f",$sum);  ?></td><td></td></tr>
             </table>
             <?php
         } else {
             echo "<h3>Koszyk (pusty)</h3>";
         }
         ?>
+        <table class="table table-checkout"><tr><td class="noborder">
         <form method="POST" action="cart.php">
             <input type="hidden" name="clear" value="1"/>
             <input type="hidden" name="return_url" value="<?php echo $current_url;?>" />
             <input type="submit" value="Opróźnij koszyk">
         </form>
+        </td><td class="checkout noborder">
+            <a href="checkout.php">Checkout</a>
+        </td>
+        </tr></table>
     </div>
 
     </div>
